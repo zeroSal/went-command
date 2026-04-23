@@ -1,2 +1,2 @@
 # went-command
-The command module for Went
+The command module for Went wireframe.
