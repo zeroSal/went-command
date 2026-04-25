@@ -7,20 +7,18 @@ import (
 )
 
 func Register(
-	constructors []func() Interface,
+	commands []Interface,
 	root *cobra.Command,
-	run func(instance Interface),
+	run func(command Interface),
 ) *cobra.Command {
-	for _, constructor := range constructors {
-		instance := constructor()
-
+	for _, command := range commands {
 		cobraCmd := &cobra.Command{
-			Use:   instance.GetHeader().Use,
-			Short: instance.GetHeader().Short,
-			Long:  instance.GetHeader().Long,
+			Use:   command.GetHeader().Use,
+			Short: command.GetHeader().Short,
+			Long:  command.GetHeader().Long,
 		}
 
-		instanceValue := reflect.ValueOf(instance).Elem()
+		instanceValue := reflect.ValueOf(command).Elem()
 
 		params := newParams()
 
@@ -33,7 +31,7 @@ func Register(
 			}
 		}
 
-		if header := instance.GetHeader(); header.Flags != nil {
+		if header := command.GetHeader(); header.Flags != nil {
 			for _, boolFlag := range header.Flags.Bool {
 				var ptr bool
 				cobraCmd.Flags().BoolVar(&ptr, boolFlag.Name, boolFlag.Default, boolFlag.Usage)
@@ -56,7 +54,7 @@ func Register(
 			}
 		}
 
-		arguments := instance.GetHeader().Arguments
+		arguments := command.GetHeader().Arguments
 
 		cobraCmd.Args = func(cmd *cobra.Command, args []string) error {
 			for i, arg := range arguments {
@@ -76,7 +74,7 @@ func Register(
 
 		cobraCmd.Run = func(cmd *cobra.Command, args []string) {
 			params.SetArgs(args)
-			run(instance)
+			run(command)
 		}
 
 		root.AddCommand(cobraCmd)
