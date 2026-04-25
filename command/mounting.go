@@ -6,7 +6,7 @@ import (
 	"github.com/spf13/cobra"
 )
 
-func Register(
+func Mount(
 	commands []Interface,
 	root *cobra.Command,
 	run func(command Interface),
