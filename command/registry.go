@@ -8,7 +8,7 @@ type Registry struct {
 	commands map[string]Interface
 }
 
-func NewCommands() *Registry {
+func NewRegistry() *Registry {
     return &Registry{
 		commands: make(map[string]Interface),
 	}
